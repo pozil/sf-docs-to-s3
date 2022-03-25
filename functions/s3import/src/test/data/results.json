@@ -1,0 +1,13 @@
+{
+    "s3Docs": [
+        {
+            "attributes": {
+                "type": "S3_Document__c"
+            },
+            "Name": "sample.pdf",
+            "URL__c": "https://poz-sf-demo.s3.eu-west-3.amazonaws.com/0011k00000z2O4XAAU/sample.pdf",
+            "Account__c": "0011k00000z2O4XAAU"
+        }
+    ],
+    "salesforceDocIds": ["0691k000001wZVTAA2"]
+}

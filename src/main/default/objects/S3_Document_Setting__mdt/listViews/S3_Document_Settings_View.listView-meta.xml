@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>S3_Document_Settings_View</fullName>
+    <columns>MasterLabel</columns>
+    <columns>DeveloperName</columns>
+    <columns>Object_API_Name__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>S3 Document Settings View</label>
+</ListView>
