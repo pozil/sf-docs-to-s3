@@ -50,11 +50,11 @@ public with sharing class ContentDocumentLinkTriggerHandler {
         ];
         List<ContentDocumentLink> newLinks = new List<ContentDocumentLink>();
         for (ContentDocumentLink docLink : docLinks) {
-            ContentDocumentLink link = new ContentDocumentLink();
-            link.ContentDocumentId = link.ContentDocumentId;
-            link.LinkedEntityId = cloudIntegrationUser.Id;
-            link.ShareType = 'V';
-            newLinks.add(link);
+            ContentDocumentLink newLink = new ContentDocumentLink();
+            newLink.ContentDocumentId = docLink.ContentDocumentId;
+            newLink.LinkedEntityId = cloudIntegrationUser.Id;
+            newLink.ShareType = 'V';
+            newLinks.add(newLink);
         }
         insert newLinks;
     }
