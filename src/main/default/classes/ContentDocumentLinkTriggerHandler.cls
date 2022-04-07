@@ -27,14 +27,31 @@ public with sharing class ContentDocumentLinkTriggerHandler {
                 filteredLinks.put(link.ContentDocumentId, link);
             }
         }
-        // Import relevant docs
+        // Share and import relevant docs
         if (filteredLinks.size() > 0) {
+            shareDocuments(filteredLinks.values());
             List<SalesforceDocInfo> docs = getDocumentInfos(
                 filteredLinks,
                 entyTypes
             );
             importDocumentInS3(docs);
         }
+    }
+
+    /**
+     * Share documents with the cloud integration user for Function access
+     */
+    private void shareDocuments(List<ContentDocumentLink> docLinks){
+        User cloudIntegrationUser = [SELECT Id, UserName from User WHERE username like 'cloud@00d%' LIMIT 1];
+        List<ContentDocumentLink> newLinks = new List<ContentDocumentLink>();
+        for (ContentDocumentLink docLink : docLinks) {
+            ContentDocumentLink link = new ContentDocumentLink();
+            link.ContentDocumentId = link.ContentDocumentId;
+            link.LinkedEntityId = cloudIntegrationUser.Id;
+            link.ShareType = 'V';
+            newLinks.add(link);
+        }
+        insert newLinks;
     }
 
     private List<SalesforceDocInfo> getDocumentInfos(
