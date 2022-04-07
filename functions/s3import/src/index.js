@@ -10,7 +10,8 @@ import { S3Service } from './s3Service.js';
     'AWS_S3_BUCKET'
 ].forEach((varName) => {
     if (!process.env[varName]) {
-        throw new Error(`Missing ${varName} environment variable`);
+        console.log(`Missing ${varName} environment variable`);
+        process.exit(-1);
     }
 });
 const { AWS_REGION, AWS_S3_BUCKET } = process.env;

@@ -41,8 +41,13 @@ public with sharing class ContentDocumentLinkTriggerHandler {
     /**
      * Share documents with the cloud integration user for Function access
      */
-    private void shareDocuments(List<ContentDocumentLink> docLinks){
-        User cloudIntegrationUser = [SELECT Id, UserName from User WHERE username like 'cloud@00d%' LIMIT 1];
+    private void shareDocuments(List<ContentDocumentLink> docLinks) {
+        User cloudIntegrationUser = [
+            SELECT Id, UserName
+            FROM User
+            WHERE username LIKE 'cloud@00d%'
+            LIMIT 1
+        ];
         List<ContentDocumentLink> newLinks = new List<ContentDocumentLink>();
         for (ContentDocumentLink docLink : docLinks) {
             ContentDocumentLink link = new ContentDocumentLink();
