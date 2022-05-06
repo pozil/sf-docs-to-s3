@@ -89,7 +89,7 @@ async function processDocument(doc, context, logger) {
         return [
             {
                 method: 'POST',
-                url: `/services/data/v${apiVersion}/sobjects/S3_Document__c/`,
+                url: `/services/data/v${apiVersion}/sobjects/S3_Document__c`,
                 referenceId: 'S3Doc',
                 body: {
                     Document_Name__c: doc.pathOnClient,
@@ -99,7 +99,7 @@ async function processDocument(doc, context, logger) {
             },
             {
                 method: 'POST',
-                url: `/services/data/v${apiVersion}/sobjects/S3_${doc.linkedEntityApiName}_Document__c/`,
+                url: `/services/data/v${apiVersion}/sobjects/S3_${doc.linkedEntityApiName}_Document__c`,
                 referenceId: 'S3DocLink',
                 body: {
                     Parent_Record__c: doc.linkedEntityId,
@@ -108,7 +108,7 @@ async function processDocument(doc, context, logger) {
             },
             {
                 method: 'DELETE',
-                url: `/services/data/v${apiVersion}/sobjects/ContentDocument/`,
+                url: `/services/data/v${apiVersion}/sobjects/ContentDocument`,
                 referenceId: 'ContentDoc',
                 body: {
                     Id: doc.contentDocumentId
@@ -190,18 +190,18 @@ async function callCompositeGraphApi(requests, context, logger) {
                 'Content-Type': 'application/json'
             }
         };
-        const graph = requests.map((compositeRequest, index) => ({
+        const graphs = requests.map((compositeRequest, index) => ({
             graphId: `graph${index}`,
             compositeRequest
         }));
 
         logger.info(JSON.stringify(options, null, 4));
-        logger.info(JSON.stringify(graph, null, 4));
+        logger.info(JSON.stringify(graphs, null, 4));
 
         // Call Composite Graph API
         const response = await HttpService.request(
             options,
-            JSON.stringify({ graph })
+            JSON.stringify({ graphs })
         );
         logger.info(JSON.stringify(response, null, 4));
 
@@ -214,6 +214,7 @@ async function callCompositeGraphApi(requests, context, logger) {
             });
         }
     } catch (err) {
+        logger.error(JSON.stringify(response, null, 4));
         throw new Error(`Composite Graph API error`, { cause: err });
     }
 }
