@@ -177,6 +177,7 @@ async function uploadS3Doc(doc, docContent, logger) {
 }
 
 async function callCompositeGraphApi(requests, context, logger) {
+    let rawResponse;
     try {
         // Prepare Composite Graph API request
         const { apiVersion, domainUrl } = context.org;
@@ -199,12 +200,13 @@ async function callCompositeGraphApi(requests, context, logger) {
         logger.info(JSON.stringify(graphs, null, 4));
 
         // Call Composite Graph API
-        const response = await HttpService.request(
+        rawResponse = await HttpService.request(
             options,
             JSON.stringify({ graphs })
         );
-        logger.info(JSON.stringify(response, null, 4));
+        logger.info(rawResponse.toString());
 
+        const response = JSON.parse(rawResponse.toString());
         const graphErrors = response.graphs.filter(
             (graphRes) => !graphRes.isSuccessful
         );
@@ -214,7 +216,9 @@ async function callCompositeGraphApi(requests, context, logger) {
             });
         }
     } catch (err) {
-        logger.error(JSON.stringify(response, null, 4));
+        if (rawResponse) {
+            logger.error(rawResponse.toString());
+        }
         throw new Error(`Composite Graph API error`, { cause: err });
     }
 }
