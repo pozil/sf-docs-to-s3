@@ -84,7 +84,7 @@ async function processDocument(doc, context, logger) {
                 `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${s3DocKey}`
             ),
             Account__c: doc.linkedEntityId,
-            OwnerId: doc.ownerId
+            Owner__c: doc.ownerId
         };
     } catch (err) {
         throw new Error(`Failed to process document`, {

@@ -6,6 +6,11 @@
     </customMetadataTypeAccesses>
     <fieldPermissions>
         <editable>true</editable>
+        <field>S3_Document__c.Owner__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>S3_Document__c.URL__c</field>
         <readable>true</readable>
     </fieldPermissions>

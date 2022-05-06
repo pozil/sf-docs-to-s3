@@ -91,54 +91,11 @@ public with sharing class ContentDocumentLinkTriggerHandler {
         );
         functions.FunctionInvocation invocation = function.invoke(
             payload,
-            new S3ImportCallback()
+            new S3ImportFunctionCallback()
         );
     }
 
-    public class S3ImportCallback implements functions.FunctionCallback {
-        public void handleResponse(functions.FunctionInvocation invocation) {
-            functions.FunctionInvocationStatus status = invocation.getStatus();
-            switch on status {
-                when SUCCESS {
-                    handleSuccess(invocation.getResponse());
-                }
-                when ERROR {
-                    handleFailure(invocation.getResponse());
-                }
-            }
-        }
-
-        private void handleSuccess(String rawResponse) {
-            FunctionResponse response = (FunctionResponse) JSON.deserializeStrict(
-                rawResponse,
-                FunctionResponse.class
-            );
-            insert response.s3docs;
-            delete [
-                SELECT Id
-                FROM ContentDocument
-                WHERE Id IN :response.salesforceDocIds
-            ];
-        }
-
-        private void handleFailure(String response) {
-            throw new FunctionException(
-                S3_IMPORT_FUNCTION +
-                ' function invocation failed: ' +
-                response
-            );
-        }
-    }
-
-    public class FunctionException extends Exception {
-    }
-
-    public class FunctionResponse {
-        public List<S3_Document__c> s3docs;
-        public List<Id> salesforceDocIds;
-    }
-
-    public class SalesforceDocInfo {
+    private class SalesforceDocInfo {
         public Id contentDocumentId;
         public Id contentVersionId;
         public Id linkedEntityId;
