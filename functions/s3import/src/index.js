@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { doc } from 'prettier';
 import { HttpService } from './httpService.js';
 import { S3Service } from './s3Service.js';
 
@@ -46,9 +47,10 @@ class Error extends OriginalError {
  */
 export default async function (event, context, logger) {
     const docs = event.data || [];
-    const compositeRequests = await docs.map(async (doc) => {
+    const compositeRequests = [];
+    docs.forEach(async (doc) => {
         try {
-            return await processDocument(doc, context, logger);
+            compositeRequests.push(await processDocument(doc, context, logger));
         } catch (err) {
             const newErr = new Error(
                 `Failed to import ${JSON.stringify(doc)} in S3`,
