@@ -96,7 +96,9 @@ async function processDocument(doc, context, logger) {
         try {
             await context.org.dataApi.commitUnitOfWork(uow);
         } catch (err) {
-            const errorMessage = `Failed to process unit of work: ${err.message}`;
+            const errorMessage = `Failed to process unit of work: ${JSON.stringify(
+                err
+            )}`;
             logger.error(errorMessage);
             throw new Error(errorMessage);
         }
