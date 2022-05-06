@@ -63,9 +63,11 @@ export default async function (event, context, logger) {
     try {
         return await callCompositeGraphApi(compositeRequests, context, logger);
     } catch (err) {
-        throw new Error(`Failed to update documents in Salesforce`, {
+        const newError = new Error(`Failed to update documents in Salesforce`, {
             cause: err
         });
+        logger.error(newError);
+        throw newError;
     }
 }
 
