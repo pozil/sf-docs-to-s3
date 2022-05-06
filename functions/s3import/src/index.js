@@ -46,7 +46,7 @@ class Error extends OriginalError {
  */
 export default async function (event, context, logger) {
     const docs = event.data || [];
-    const compositeRequests = docs.map(async (doc) => {
+    const compositeRequests = await docs.map(async (doc) => {
         try {
             return await processDocument(doc, context, logger);
         } catch (err) {
@@ -200,12 +200,12 @@ async function callCompositeGraphApi(requests, context, logger) {
         // Call Composite Graph API
         const response = await HttpService.request(
             options,
-            JSON.stringify(graph)
+            JSON.stringify({ graph })
         );
         logger.info(JSON.stringify(response, null, 4));
 
         const graphErrors = response.graphs.filter(
-            (graph) => !graph.isSuccessful
+            (graphRes) => !graphRes.isSuccessful
         );
         if (graphErrors.length > 0) {
             throw new Error(`One or more requests failed`, {
