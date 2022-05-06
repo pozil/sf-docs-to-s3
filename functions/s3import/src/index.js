@@ -176,28 +176,34 @@ async function uploadS3Doc(doc, docContent, logger) {
 }
 
 async function callCompositeGraphApi(requests, context, logger) {
-    // Prepare Composite Graph API request
-    const { apiVersion, domainUrl } = context.org;
-    const { accessToken } = context.org.dataApi;
-    const options = {
-        hostname: domainUrl.substring(8), // Remove https://
-        path: `/services/data/v${apiVersion}/composite/graph`,
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        }
-    };
-    const graph = requests.map((compositeRequest, index) => ({
-        graphId: `graph${index}`,
-        compositeRequest
-    }));
-    // Call Composite Graph API
     try {
+        // Prepare Composite Graph API request
+        const { apiVersion, domainUrl } = context.org;
+        const { accessToken } = context.org.dataApi;
+        const options = {
+            hostname: domainUrl.substring(8), // Remove https://
+            path: `/services/data/v${apiVersion}/composite/graph`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        const graph = requests.map((compositeRequest, index) => ({
+            graphId: `graph${index}`,
+            compositeRequest
+        }));
+
+        logger.info(JSON.stringify(options, null, 4));
+        logger.info(JSON.stringify(graph, null, 4));
+
+        // Call Composite Graph API
         const response = await HttpService.request(
             options,
             JSON.stringify(graph)
         );
+        logger.info(JSON.stringify(response, null, 4));
+
         const graphErrors = response.graphs.filter(
             (graph) => !graph.isSuccessful
         );
