@@ -51,6 +51,7 @@ private class ContentDocumentLinkTriggerHandlerTest {
         System.assertEquals(expectedRequestJson, mockFunction.requestPayload);
     }
 
+    /*
     @isTest
     static void s3ImportCallback_works() {
         // Create a test account and two docs
@@ -101,6 +102,7 @@ private class ContentDocumentLinkTriggerHandlerTest {
         System.assertEquals(DOC_URL, s3Docs[0].URL__c);
         System.assertEquals(acc.Id, s3Docs[0].Account__c);
     }
+    */
 
     private static ContentVersion createTestDoc(String pathOnClient) {
         ContentVersion docVersion = new ContentVersion(

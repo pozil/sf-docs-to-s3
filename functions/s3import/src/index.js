@@ -46,10 +46,9 @@ class Error extends OriginalError {
  */
 export default async function (event, context, logger) {
     const docs = event.data || [];
-    const s3Docs = [];
-    for (const doc of docs) {
+    const compositeRequests = docs.map(async (doc) => {
         try {
-            s3Docs.push(await processDocument(doc, context, logger));
+            return await processDocument(doc, context, logger);
         } catch (err) {
             const newErr = new Error(
                 `Failed to import ${JSON.stringify(doc)} in S3`,
@@ -60,32 +59,59 @@ export default async function (event, context, logger) {
             logger.error(newErr.toString());
             throw newErr;
         }
+    });
+    try {
+        return await callCompositeGraphApi(compositeRequests, context, logger);
+    } catch (err) {
+        throw new Error(`Failed to update documents in Salesforce`, {
+            cause: err
+        });
     }
-    return {
-        s3Docs,
-        salesforceDocIds: docs.map((doc) => doc.contentDocumentId)
-    };
 }
 
 async function processDocument(doc, context, logger) {
     try {
+        // Download document from Salesforce
         const docContent = await downloadSalesforceDoc(
             doc.contentVersionId,
             context
         );
+        // Upload document to S3
         const s3DocKey = await uploadS3Doc(doc, docContent, logger);
-        // Return an S3 Document record
-        return {
-            attributes: {
-                type: 'S3_Document__c'
+        const s3DocUrl = encodeURI(
+            `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${s3DocKey}`
+        );
+        // Return composite requests
+        const { apiVersion } = context.org;
+        return [
+            {
+                method: 'POST',
+                url: `/services/data/v${apiVersion}/sobjects/S3_Document__c/`,
+                referenceId: 'S3Doc',
+                body: {
+                    Document_Name__c: doc.pathOnClient,
+                    URL__c: s3DocUrl,
+                    OwnerId: doc.ownerId
+                }
             },
-            Name: doc.pathOnClient,
-            URL__c: encodeURI(
-                `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${s3DocKey}`
-            ),
-            Account__c: doc.linkedEntityId,
-            Owner__c: doc.ownerId
-        };
+            {
+                method: 'POST',
+                url: `/services/data/v${apiVersion}/sobjects/S3_${doc.linkedEntityApiName}_Document__c/`,
+                referenceId: 'S3DocLink',
+                body: {
+                    Parent_Record__c: doc.linkedEntityId,
+                    S3_Document__c: '@{S3Doc.id}'
+                }
+            },
+            {
+                method: 'DELETE',
+                url: `/services/data/v${apiVersion}/sobjects/ContentDocument/`,
+                referenceId: 'ContentDoc',
+                body: {
+                    Id: doc.contentDocumentId
+                }
+            }
+        ];
     } catch (err) {
         throw new Error(`Failed to process document`, {
             cause: err
@@ -105,12 +131,13 @@ async function downloadSalesforceDoc(contentVersionId, context) {
     const options = {
         hostname: domainUrl.substring(8), // Remove https://
         path: `/services/data/v${apiVersion}/sobjects/ContentVersion/${contentVersionId}/VersionData`,
+        method: 'GET',
         headers: {
             Authorization: `Bearer ${accessToken}`
         }
     };
     try {
-        return await HttpService.get(options);
+        return await HttpService.request(options);
     } catch (err) {
         throw new Error(`Failed to download Salesforce doc`, { cause: err });
     }
@@ -143,5 +170,41 @@ async function uploadS3Doc(doc, docContent, logger) {
         return Key;
     } catch (err) {
         throw new Error(`Failed to upload doc to S3`, { cause: err });
+    }
+}
+
+async function callCompositeGraphApi(requests, context, logger) {
+    // Prepare Composite Graph API request
+    const { apiVersion, domainUrl } = context.org;
+    const { accessToken } = context.org.dataApi;
+    const options = {
+        hostname: domainUrl.substring(8), // Remove https://
+        path: `/services/data/v${apiVersion}/composite/graph`,
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        }
+    };
+    const graph = requests.map((compositeRequest, index) => ({
+        graphId: `graph${index}`,
+        compositeRequest
+    }));
+    // Call Composite Graph API
+    try {
+        const response = await HttpService.request(
+            options,
+            JSON.stringify(graph)
+        );
+        const graphErrors = response.graphs.filter(
+            (graph) => !graph.isSuccessful
+        );
+        if (graphErrors.length > 0) {
+            throw new Error(`One or more requests failed`, {
+                cause: JSON.stringify(graphErrors)
+            });
+        }
+    } catch (err) {
+        throw new Error(`Composite Graph API error`, { cause: err });
     }
 }

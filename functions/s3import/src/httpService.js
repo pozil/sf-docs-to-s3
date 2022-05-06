@@ -1,7 +1,7 @@
 import https from 'https';
 
 export class HttpService {
-    static async get(options) {
+    static async request(options, body) {
         return new Promise((resolve, reject) => {
             const req = https.request(options, (res) => {
                 if (res.statusCode !== 200) {
@@ -20,6 +20,7 @@ export class HttpService {
                     resolve(Buffer.concat(data));
                 });
             });
+
             req.on('error', (err) => {
                 reject(
                     new Error(
@@ -30,6 +31,11 @@ export class HttpService {
                     )
                 );
             });
+
+            if (body) {
+                req.write(body);
+            }
+
             req.end();
         });
     }

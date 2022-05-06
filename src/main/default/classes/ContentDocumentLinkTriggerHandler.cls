@@ -39,7 +39,7 @@ public with sharing class ContentDocumentLinkTriggerHandler {
     }
 
     /**
-     * Share documents with the cloud integration user for Function access
+     * Share documents with the Cloud Integration user for Function access
      */
     private void shareDocuments(List<ContentDocumentLink> docLinks) {
         User cloudIntegrationUser = [
@@ -95,7 +95,7 @@ public with sharing class ContentDocumentLinkTriggerHandler {
         );
     }
 
-    private class SalesforceDocInfo {
+    public class SalesforceDocInfo {
         public Id contentDocumentId;
         public Id contentVersionId;
         public Id linkedEntityId;
