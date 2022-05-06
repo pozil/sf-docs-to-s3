@@ -47,7 +47,7 @@ class Error extends OriginalError {
 export default async function (event, context, logger) {
     const docs = event.data || [];
     const compositeRequests = [];
-    docs.forEach(async (doc) => {
+    for (const doc of docs) {
         try {
             compositeRequests.push(await processDocument(doc, context, logger));
         } catch (err) {
@@ -60,7 +60,7 @@ export default async function (event, context, logger) {
             logger.error(newErr.toString());
             throw newErr;
         }
-    });
+    }
     try {
         return await callCompositeGraphApi(compositeRequests, context, logger);
     } catch (err) {
