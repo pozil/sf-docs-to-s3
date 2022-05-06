@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Account__c</fullName>
+    <fullName>S3_Document__c</fullName>
     <externalId>false</externalId>
-    <label>Account</label>
-    <referenceTo>Account</referenceTo>
-    <relationshipLabel>S3 Documents</relationshipLabel>
-    <relationshipName>S3_Documents</relationshipName>
-    <relationshipOrder>0</relationshipOrder>
+    <label>S3 Document</label>
+    <referenceTo>S3_Document__c</referenceTo>
+    <relationshipLabel>S3 Account Documents</relationshipLabel>
+    <relationshipName>S3_Account_Documents</relationshipName>
+    <relationshipOrder>1</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
     <trackTrending>false</trackTrending>
     <type>MasterDetail</type>

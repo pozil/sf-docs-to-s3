@@ -152,15 +152,15 @@
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>ReadWrite</externalSharingModel>
-    <label>S3 Document</label>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <label>S3 Account Document</label>
     <nameField>
-        <displayFormat>S3-DOC-{0000}</displayFormat>
-        <label>S3 Document ID</label>
+        <displayFormat>S3-ACC-DOC-{0000}</displayFormat>
+        <label>S3 Account Document ID</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>S3 Documents</pluralLabel>
+    <pluralLabel>S3 Account Documents</pluralLabel>
     <searchLayouts />
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

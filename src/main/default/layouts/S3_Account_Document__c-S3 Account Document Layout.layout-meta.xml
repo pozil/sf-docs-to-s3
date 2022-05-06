@@ -7,28 +7,19 @@
         <label>Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>MasterLabel</field>
+                <behavior>Readonly</behavior>
+                <field>Name</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>DeveloperName</field>
+                <field>Parent_Record__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>Object_API_Name__c</field>
+                <field>S3_Document__c</field>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>IsProtected</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Required</behavior>
-                <field>NamespacePrefix</field>
-            </layoutItems>
-        </layoutColumns>
+        <layoutColumns />
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
@@ -53,7 +44,7 @@
     <layoutSections>
         <customLabel>false</customLabel>
         <detailHeading>false</detailHeading>
-        <editHeading>false</editHeading>
+        <editHeading>true</editHeading>
         <layoutColumns />
         <layoutColumns />
         <layoutColumns />

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Record__c</fullName>
+    <externalId>false</externalId>
+    <label>Parent Record</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>S3 Account Documents</relationshipLabel>
+    <relationshipName>S3_Account_Documents</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

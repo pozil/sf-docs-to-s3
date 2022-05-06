@@ -246,14 +246,14 @@
         <relatedList>RelatedNoteList</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>S3_Document__c.Account__c</relatedList>
-    </relatedLists>
-    <relatedLists>
         <fields>ACCOUNT.NAME</fields>
         <fields>OPPORTUNITY.NAME</fields>
         <fields>PARTNER.ROLE</fields>
         <relatedList>RelatedPartnerList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>S3_Account_Document__c.Parent_Record__c</relatedList>
     </relatedLists>
     <relatedObjects>ParentId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>
