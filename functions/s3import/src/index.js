@@ -90,15 +90,13 @@ async function processDocument(doc, context, logger) {
                 S3_Document__c: s3DocId
             }
         });
-        uow.registerDelete('ContentDocument', doc.contentDocumentId);
+        //uow.registerDelete('ContentDocument', doc.contentDocumentId);
 
         // Execute unit of work
         try {
             await context.org.dataApi.commitUnitOfWork(uow);
         } catch (err) {
-            const errorMessage = `Failed to process unit of work: ${JSON.stringify(
-                err
-            )}`;
+            const errorMessage = `Failed to process unit of work: ${err.message}`;
             logger.error(errorMessage);
             throw new Error(errorMessage);
         }
