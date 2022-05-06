@@ -18,7 +18,6 @@ public with sharing class S3ImportFunctionCallback implements functions.Function
     }
 
     private void handleSuccess(String rawResponse) {
-        /*
         // Parse JSON response
         S3ImportResponse response;
         try {
@@ -29,14 +28,6 @@ public with sharing class S3ImportFunctionCallback implements functions.Function
         } catch (Exception e) {
             throw new FunctionException(
                 'failed to parse JSON response: ' + rawResponse
-            );
-        }
-        // Insert S3 Document records
-        try {
-            insert response.s3Docs;
-        } catch (Exception e) {
-            throw new FunctionException(
-                'failed to insert S3 Document records: ' + response.s3Docs
             );
         }
         // Delete original ContentDocument records
@@ -52,7 +43,6 @@ public with sharing class S3ImportFunctionCallback implements functions.Function
                 response.salesforceDocIds
             );
         }
-        */
     }
 
     private void handleFailure(String rawResponse) {
@@ -63,7 +53,6 @@ public with sharing class S3ImportFunctionCallback implements functions.Function
     }
 
     private class S3ImportResponse {
-        public List<SObject> s3Docs;
         public List<Id> salesforceDocIds;
     }
 }

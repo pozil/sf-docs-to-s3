@@ -47,9 +47,11 @@ class Error extends OriginalError {
 export default async function (event, context, logger) {
     try {
         const docs = event.data || [];
+        const salesforceDocIds = [];
         for (const doc of docs) {
-            await processDocument(doc, context, logger);
+            salesforceDocIds.push(await processDocument(doc, context, logger));
         }
+        return { salesforceDocIds };
     } catch (err) {
         const newError = new Error(`Failed to process documents`, {
             cause: err
@@ -90,11 +92,11 @@ async function processDocument(doc, context, logger) {
                 S3_Document__c: s3DocId
             }
         });
-        //uow.registerDelete('ContentDocument', doc.contentDocumentId);
 
         // Execute unit of work
         try {
             await context.org.dataApi.commitUnitOfWork(uow);
+            return doc.contentDocumentId;
         } catch (err) {
             const errorMessage = `Failed to process unit of work: ${err.message}`;
             logger.error(errorMessage);
