@@ -45,26 +45,13 @@ class Error extends OriginalError {
  *                 to a given execution of a function.
  */
 export default async function (event, context, logger) {
-    const docs = event.data || [];
-    const compositeRequests = [];
-    for (const doc of docs) {
-        try {
-            compositeRequests.push(await processDocument(doc, context, logger));
-        } catch (err) {
-            const newErr = new Error(
-                `Failed to import ${JSON.stringify(doc)} in S3`,
-                {
-                    cause: err
-                }
-            );
-            logger.error(newErr.toString());
-            throw newErr;
-        }
-    }
     try {
-        return await callCompositeGraphApi(compositeRequests, context, logger);
+        const docs = event.data || [];
+        for (const doc of docs) {
+            await processDocument(doc, context, logger);
+        }
     } catch (err) {
-        const newError = new Error(`Failed to update documents in Salesforce`, {
+        const newError = new Error(`Failed to process documents`, {
             cause: err
         });
         logger.error(newError.toString());
@@ -79,44 +66,42 @@ async function processDocument(doc, context, logger) {
             doc.contentVersionId,
             context
         );
+
         // Upload document to S3
         const s3DocKey = await uploadS3Doc(doc, docContent, logger);
         const s3DocUrl = encodeURI(
             `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${s3DocKey}`
         );
-        // Return composite requests
-        const { apiVersion } = context.org;
-        return [
-            {
-                method: 'POST',
-                url: `/services/data/v${apiVersion}/sobjects/S3_Document__c`,
-                referenceId: 'S3Doc',
-                body: {
-                    Document_Name__c: doc.pathOnClient,
-                    URL__c: s3DocUrl,
-                    OwnerId: doc.ownerId
-                }
-            },
-            {
-                method: 'POST',
-                url: `/services/data/v${apiVersion}/sobjects/S3_${doc.linkedEntityApiName}_Document__c`,
-                referenceId: 'S3DocLink',
-                body: {
-                    Parent_Record__c: doc.linkedEntityId,
-                    S3_Document__c: '@{S3Doc.id}'
-                }
-            },
-            {
-                method: 'DELETE',
-                url: `/services/data/v${apiVersion}/sobjects/ContentDocument`,
-                referenceId: 'ContentDoc',
-                body: {
-                    Id: doc.contentDocumentId
-                }
+
+        // Prepare unit of work to update Salesforce data
+        const uow = context.org.dataApi.newUnitOfWork();
+        const s3DocId = uow.registerCreate({
+            type: 'S3_Document__c',
+            fields: {
+                Document_Name__c: doc.pathOnClient,
+                URL__c: s3DocUrl,
+                OwnerId: doc.ownerId
             }
-        ];
+        });
+        uow.registerCreate({
+            type: `S3_${doc.linkedEntityApiName}_Document__c`,
+            fields: {
+                Parent_Record__c: doc.linkedEntityId,
+                S3_Document__c: s3DocId
+            }
+        });
+        uow.registerDelete('ContentDocument', doc.contentDocumentId);
+
+        // Execute unit of work
+        try {
+            await context.org.dataApi.commitUnitOfWork(uow);
+        } catch (err) {
+            const errorMessage = `Failed to process unit of work: ${err.message}`;
+            logger.error(errorMessage);
+            throw new Error(errorMessage);
+        }
     } catch (err) {
-        throw new Error(`Failed to process document`, {
+        throw new Error(`Failed to process document ${JSON.stringify(doc)}`, {
             cause: err
         });
     }
@@ -173,52 +158,5 @@ async function uploadS3Doc(doc, docContent, logger) {
         return Key;
     } catch (err) {
         throw new Error(`Failed to upload doc to S3`, { cause: err });
-    }
-}
-
-async function callCompositeGraphApi(requests, context, logger) {
-    let rawResponse;
-    try {
-        // Prepare Composite Graph API request
-        const { apiVersion, domainUrl } = context.org;
-        const { accessToken } = context.org.dataApi;
-        const options = {
-            hostname: domainUrl.substring(8), // Remove https://
-            path: `/services/data/v${apiVersion}/composite/graph`,
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            }
-        };
-        const graphs = requests.map((compositeRequest, index) => ({
-            graphId: `graph${index}`,
-            compositeRequest
-        }));
-
-        logger.info(JSON.stringify(options, null, 4));
-        logger.info(JSON.stringify(graphs, null, 4));
-
-        // Call Composite Graph API
-        rawResponse = await HttpService.request(
-            options,
-            JSON.stringify({ graphs })
-        );
-        logger.info(rawResponse.toString());
-
-        const response = JSON.parse(rawResponse.toString());
-        const graphErrors = response.graphs.filter(
-            (graphRes) => !graphRes.isSuccessful
-        );
-        if (graphErrors.length > 0) {
-            throw new Error(`One or more requests failed`, {
-                cause: JSON.stringify(graphErrors)
-            });
-        }
-    } catch (err) {
-        if (rawResponse) {
-            logger.error(rawResponse.toString());
-        }
-        throw new Error(`Composite Graph API error`, { cause: err });
     }
 }
