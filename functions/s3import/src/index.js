@@ -75,7 +75,7 @@ async function processDocument(doc, context, logger) {
             `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${s3DocKey}`
         );
 
-        // Prepare unit of work to update Salesforce data
+        // Prepare unit of work to create S3 document records in Salesforce
         const uow = context.org.dataApi.newUnitOfWork();
         const s3DocId = uow.registerCreate({
             type: 'S3_Document__c',
@@ -92,6 +92,8 @@ async function processDocument(doc, context, logger) {
                 S3_Document__c: s3DocId
             }
         });
+        // Function cannot delete ContentDocument records because of special permission issues
+        // so we must return the record ID and delete it in the Apex callback.
 
         // Execute unit of work
         try {
