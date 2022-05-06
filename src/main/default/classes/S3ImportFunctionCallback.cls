@@ -1,4 +1,4 @@
-public without sharing class S3ImportFunctionCallback implements functions.FunctionCallback {
+public with sharing class S3ImportFunctionCallback implements functions.FunctionCallback {
     public void handleResponse(functions.FunctionInvocation invocation) {
         functions.FunctionInvocationStatus status = invocation.getStatus();
         switch on status {
