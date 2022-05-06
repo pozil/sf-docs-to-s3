@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import { doc } from 'prettier';
 import { HttpService } from './httpService.js';
 import { S3Service } from './s3Service.js';
 
