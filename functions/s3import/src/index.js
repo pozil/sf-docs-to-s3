@@ -66,7 +66,7 @@ export default async function (event, context, logger) {
         const newError = new Error(`Failed to update documents in Salesforce`, {
             cause: err
         });
-        logger.error(newError);
+        logger.error(newError.toString());
         throw newError;
     }
 }
