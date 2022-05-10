@@ -1,5 +1,5 @@
 {
-    "orgName": "functionsS3",
+    "orgName": "s3demo",
     "edition": "Developer",
     "features": ["Functions", "EnableSetPasswordInApi"],
     "settings": {
