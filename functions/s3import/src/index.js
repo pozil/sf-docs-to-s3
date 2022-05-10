@@ -76,6 +76,12 @@ async function processDocument(doc, context, logger) {
         );
 
         // Prepare unit of work to create S3 document records in Salesforce
+        const linkEntity = doc.linkedEntityApiName.endsWith('__c')
+            ? doc.linkedEntityApiName.substring(
+                  0,
+                  doc.linkedEntityApiName.length - 3
+              )
+            : doc.linkedEntityApiName;
         const uow = context.org.dataApi.newUnitOfWork();
         const s3DocId = uow.registerCreate({
             type: 'S3_Document__c',
@@ -86,7 +92,7 @@ async function processDocument(doc, context, logger) {
             }
         });
         uow.registerCreate({
-            type: `S3_${doc.linkedEntityApiName}_Document__c`,
+            type: `S3_${linkEntity}_Document__c`,
             fields: {
                 Parent_Record__c: doc.linkedEntityId,
                 S3_Document__c: s3DocId

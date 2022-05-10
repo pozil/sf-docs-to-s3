@@ -252,7 +252,10 @@
         <relatedList>RelatedPartnerList</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>NAME</fields>
+        <fields>S3_Document__c.Document_Name__c</fields>
+        <fields>S3_Document__c.URL__c</fields>
+        <fields>Owner.CUSTENT_OWNER_NAME</fields>
+        <fields>S3_Document__c.CREATED_DATE</fields>
         <relatedList>S3_Account_Document__c.Parent_Record__c</relatedList>
     </relatedLists>
     <relatedObjects>ParentId</relatedObjects>
@@ -262,7 +265,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1k000003fzd7</masterLabel>
+        <masterLabel>00h54000007EkXa</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
