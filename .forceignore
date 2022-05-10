@@ -14,3 +14,5 @@ package.xml
 **/profiles/**
 
 **/customMetadata/**
+
+**/sfdcInternalInt__sfdc_evergreen_event_source.permissionset-meta.xml
