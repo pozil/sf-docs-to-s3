@@ -68,7 +68,9 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
         - S3 Document Setting Name: `S3_Account_Document`
         - Object API Name: `Account`
 
-1. For each Object that you would like to export document for, create a pivot table between `S3_Document__c` and your object (Account based on the previous example)
+1. For each Object that you would like to export document for, create a junction object between `S3_Document__c` and your object (Account based on the previous example)
+
+    ![Junction object](/doc-gfx/junction-object.jpg)
 
     1. Navigate to **Object Manager** in Salesforce Setup
     1. Click **Create** and select **Custom Object**
