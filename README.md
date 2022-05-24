@@ -2,8 +2,8 @@
 
 ## About
 
-This project is an integration between a Salesforce Org, Saleforce Functions and Amazon S3.
-The goal of the integration is to export documents from Salesforce to S3 in order to reduce file storage consumption on the Salesforce side.
+This project is an integration between a Salesforce Org, Salesforce Functions and Amazon S3.
+The goal of the integration is to export documents from Salesforce to S3 to reduce file storage consumption on the Salesforce side.
 
 Thanks to Functions, we transfer documents to S3 with the following scenario:
 
@@ -19,9 +19,27 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
 
 ## Installation
 
+### Prerequisites
+
+#### Salesforce Resources
+
+1. [Sign up for a Salesforce Functions trial org](https://functions.salesforce.com/signups/).
+1. [Enable Dev Hub](https://help.salesforce.com/s/articleView?id=sf.sfdx_setup_enable_devhub.htm&type=5) in your org.
+1. [Install the Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli).
+1. [Authorize](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth.htm) your Dev Hub in the Salesforce CLI.
+
+#### AWS Resources
+
+1. [Sign up for a AWS free-tier account](https://portal.aws.amazon.com/billing/signup).
+1. [Create a S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html).
+1. Complete these steps in the Identity and Access Management (IAM) console:
+    1. [Create a policy](https://docs.amazonaws.cn/en_us/IAM/latest/UserGuide/access_policies_create-console.html) that grants write access on your S3 bucket.
+    1. [Create a user](https://docs.amazonaws.cn/en_us/IAM/latest/UserGuide/id_users_create.html#id_users_create_console).
+    1. [Assign your policy to the user](https://docs.amazonaws.cn/en_us/IAM/latest/UserGuide/id_users_change-permissions.html#users_change_permissions-add-console).
+
 ### Step 1: Deploy and configure the Salesforce Org
 
-1. Install the project in a scratch org by running this script:
+1. Install the project in a Scratch org by running this script:
 
     **MacOS or Linux**
 
@@ -34,6 +52,8 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
     ```sh
     install-dev.bat
     ```
+
+    You can install the project on other types of Salesforce orgs by looking at the content of the scripts and changing the commands.
 
 1. For each Object that you would like to export document for (Account in this example), create a record for the custom metadata type "S3 Document Setting"
 
@@ -82,14 +102,14 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
     sf env create compute --alias s3env --connected-org s3
     ```
 
-1. Deploy the Saleforce Function:
+1. Deploy the Salesforce Function:
 
     ```sh
     cd functions/s3import
     sf deploy functions -o s3
     ```
 
-1. Configure the Saleforce Function with environment variables (make sure to replace values accordingly):
+1. Configure the Salesforce Function with environment variables (make sure to replace values accordingly):
 
     ```sh
     sf env var set AWS_ACCESS_KEY_ID=XXXXXXXXXX -e s3env
@@ -98,12 +118,12 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
     sf env var set AWS_S3_BUCKET=XXXXXXXXXX -e s3env
     ```
 
-    | Variable Name           | Description                                   | Example       |
-    | ----------------------- | --------------------------------------------- | ------------- |
-    | `AWS_ACCESS_KEY_ID`     | The access key ID for your AWS IAM user.      | _secret_      |
-    | `AWS_SECRET_ACCESS_KEY` | The secrect access key for your AWS IAM user. | _secret_      |
-    | `AWS_REGION`            | The region of your S3 bucket.                 | `eu-west-3`   |
-    | `AWS_S3_BUCKET`         | The name of your S3 bucket.                   | `poz-sf-demo` |
+    | Variable Name           | Description                                  | Example       |
+    | ----------------------- | -------------------------------------------- | ------------- |
+    | `AWS_ACCESS_KEY_ID`     | The access key ID for your AWS IAM user.     | _secret_      |
+    | `AWS_SECRET_ACCESS_KEY` | The secret access key for your AWS IAM user. | _secret_      |
+    | `AWS_REGION`            | The region of your S3 bucket.                | `eu-west-3`   |
+    | `AWS_S3_BUCKET`         | The name of your S3 bucket.                  | `poz-sf-demo` |
 
 ## Troubleshooting
 
