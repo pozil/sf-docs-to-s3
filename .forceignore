@@ -11,8 +11,10 @@ package.xml
 # LWC Jest
 **/__tests__/**
 
+**/appMenus/**
 **/profiles/**
 **/objectTranslations/**
 **/customMetadata/**
+**/connectedApps/**
 
 **/sfdcInternalInt__sfdc_evergreen_event_source.permissionset-meta.xml
