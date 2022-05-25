@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { HttpService } from './httpService.js';
 import { S3Service } from './s3Service.js';
 
-// Check and retrieve Function environment variables
+// Check and retrieve environment variables
 [
     'AWS_ACCESS_KEY_ID',
     'AWS_SECRET_ACCESS_KEY',
