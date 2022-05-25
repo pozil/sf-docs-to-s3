@@ -118,6 +118,7 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
     sf env var set AWS_SECRET_ACCESS_KEY=XXXXXXXXXX -e s3env
     sf env var set AWS_REGION=XXXXXXXXXX -e s3env
     sf env var set AWS_S3_BUCKET=XXXXXXXXXX -e s3env
+    sf env var set DOWNLOAD_URL_PREFIX='XXXXXXXXXX' -e s3env
     ```
 
     | Variable Name           | Description                                                                                                                                                           | Example                                        |
