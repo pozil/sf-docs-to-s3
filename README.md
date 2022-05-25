@@ -120,12 +120,13 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
     sf env var set AWS_S3_BUCKET=XXXXXXXXXX -e s3env
     ```
 
-    | Variable Name           | Description                                  | Example       |
-    | ----------------------- | -------------------------------------------- | ------------- |
-    | `AWS_ACCESS_KEY_ID`     | The access key ID for your AWS IAM user.     | _secret_      |
-    | `AWS_SECRET_ACCESS_KEY` | The secret access key for your AWS IAM user. | _secret_      |
-    | `AWS_REGION`            | The region of your S3 bucket.                | `eu-west-3`   |
-    | `AWS_S3_BUCKET`         | The name of your S3 bucket.                  | `poz-sf-demo` |
+    | Variable Name           | Description                                                                                                                                                           | Example                                        |
+    | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+    | `AWS_ACCESS_KEY_ID`     | The access key ID for your AWS IAM user.                                                                                                                              | _secret_                                       |
+    | `AWS_SECRET_ACCESS_KEY` | The secret access key for your AWS IAM user.                                                                                                                          | _secret_                                       |
+    | `AWS_REGION`            | The region of your S3 bucket.                                                                                                                                         | `eu-west-3`                                    |
+    | `AWS_S3_BUCKET`         | The name of your S3 bucket.                                                                                                                                           | `poz-sf-demo`                                  |
+    | `DOWNLOAD_URL_PREFIX`   | An optional prefix appended in front of the S3 download URL. This is useful for redirecting users to a proxy that checks Salesforce auth before downloading the file. | `https://my-proxy.herokuapp.com/download?url=` |
 
 ## Troubleshooting
 

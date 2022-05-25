@@ -14,7 +14,7 @@ import { S3Service } from './s3Service.js';
         process.exit(-1);
     }
 });
-const { AWS_REGION, AWS_S3_BUCKET } = process.env;
+const { AWS_REGION, AWS_S3_BUCKET, DOWNLOAD_URL_PREFIX } = process.env;
 S3Service.init(AWS_REGION);
 
 // Polyfill for Error cause
@@ -72,7 +72,8 @@ async function processDocument(doc, context, logger) {
         // Upload document to S3
         const s3DocKey = await uploadS3Doc(doc, docContent, logger);
         const s3DocUrl = encodeURI(
-            `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${s3DocKey}`
+            (DOWNLOAD_URL_PREFIX ? DOWNLOAD_URL_PREFIX : '') +
+                `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${s3DocKey}`
         );
 
         // Prepare unit of work to create S3 document records in Salesforce
