@@ -3,6 +3,9 @@
 ## About
 
 This project is an integration between a Salesforce Org, Salesforce Functions and Amazon S3.
+
+The project is complementary with this node app that [allows Salesforce users to download Amazon S3 documents](https://github.com/pozil/sf-docs-from-s3).
+
 The goal of the integration is to export documents from Salesforce to S3 to reduce file storage consumption on the Salesforce side.
 
 Thanks to Functions, we transfer documents to S3 with the following scenario:
@@ -84,7 +87,7 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
         - Display Format: `S3-ACC-DOC-{0000}`
         - Starting Number: `0`
 
-    **Note:** The object name is automatically selected by the Function so naming must follow this convention: `S3_OBJECT_Document__c` where `OBJECT` is the API name of the object without the trailling `__c` for custom objects. For example, if you have a `My_Custom_Object__c` object, you should enter `S3_My_Custom_Object_Document__c`.
+    **Note:** The object name is automatically selected by the Function so naming must follow this convention: `S3_OBJECT_Document__c` where `OBJECT` is the API name of the object without the trailing `__c` for custom objects. For example, if you have a `My_Custom_Object__c` object, you should enter `S3_My_Custom_Object_Document__c`.
 
 1. Optional: for each Object that you would like to export document for, configure related list layout to display relevant fields
 
