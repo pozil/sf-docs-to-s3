@@ -15,8 +15,8 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
 1. Apex trigger handler class invokes a Salesforce Function asynchronously with the document metadata.
 1. Function retrieves the document content using the Salesforce REST API.
 1. Function uploads the document content to an Amazon S3 bucket.
-1. Once the Function completes, it calls an Apex callback method on the trigger handler class.
-1. Apex callback method removes the original document from Salesforce and creates a record that links the document stored in S3 to the record.
+1. Once the document is uploaded, the function creates a Salesforce record that links the document stored in S3 to the record and it calls an Apex callback method on the trigger handler class.
+1. Apex callback method removes the original document from Salesforce.
 
 ![Integration architecture](/doc-gfx/architecture.jpg)
 
