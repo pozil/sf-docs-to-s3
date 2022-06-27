@@ -95,6 +95,13 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
 
 ### Step 2: Deploy and configure the Salesforce Function
 
+You have two options for this step: [deploy to a compute environement](#deploy-to-compute-environment) or [run locally](#run-locally).
+Make sure to refer to the relevant section and check the [environment variables reference](#environment-variables-reference) section for the appropriate configuration.
+
+#### Deploy to compute environment
+
+Follow these steps to deploy your function to a compute environment:
+
 1. Log in to Salesforce Functions (you may have to repeat this command later as this will eventually time out)
 
     ```sh
@@ -114,7 +121,7 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
     sf deploy functions -o s3
     ```
 
-1. Configure the Salesforce Function with environment variables (make sure to replace values accordingly):
+1. Configure the Salesforce Function with the following command (see environment variables reference):
 
     ```sh
     sf env var set AWS_ACCESS_KEY_ID=XXXXXXXXXX -e s3env
@@ -124,13 +131,36 @@ Thanks to Functions, we transfer documents to S3 with the following scenario:
     sf env var set DOWNLOAD_URL_PREFIX='XXXXXXXXXX' -e s3env
     ```
 
-    | Variable Name           | Description                                                                                                                                                           | Example                                        |
-    | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-    | `AWS_ACCESS_KEY_ID`     | The access key ID for your AWS IAM user.                                                                                                                              | _secret_                                       |
-    | `AWS_SECRET_ACCESS_KEY` | The secret access key for your AWS IAM user.                                                                                                                          | _secret_                                       |
-    | `AWS_REGION`            | The region of your S3 bucket.                                                                                                                                         | `eu-west-3`                                    |
-    | `AWS_S3_BUCKET`         | The name of your S3 bucket.                                                                                                                                           | `poz-sf-demo`                                  |
-    | `DOWNLOAD_URL_PREFIX`   | An optional prefix appended in front of the S3 download URL. This is useful for redirecting users to a proxy that checks Salesforce auth before downloading the file. | `https://my-proxy.herokuapp.com/download?url=` |
+#### Run locally
+
+Follow these steps to test your function locally:
+
+1. Create a `.env` file in the `functions/s3import` directory. Use the following template and make sure to replace values accordingly (see environment variables reference):
+
+    ```properties
+    AWS_ACCESS_KEY_ID=XXXXXXXXXX
+    AWS_SECRET_ACCESS_KEY=XXXXXXXXXX
+    AWS_REGION=XXXXXXXXXX
+    AWS_S3_BUCKET=XXXXXXXXXX
+    DOWNLOAD_URL_PREFIX=XXXXXXXXXX
+    ```
+
+1. Run these commands to start the function locally:
+
+    ```sh
+    cd functions/s3import
+    sf run function start
+    ```
+
+#### Environment variables reference
+
+| Variable Name           | Description                                                                                                                                                           | Example                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `AWS_ACCESS_KEY_ID`     | The access key ID for your AWS IAM user.                                                                                                                              | _secret_                                       |
+| `AWS_SECRET_ACCESS_KEY` | The secret access key for your AWS IAM user.                                                                                                                          | _secret_                                       |
+| `AWS_REGION`            | The region of your S3 bucket.                                                                                                                                         | `eu-west-3`                                    |
+| `AWS_S3_BUCKET`         | The name of your S3 bucket.                                                                                                                                           | `poz-sf-demo`                                  |
+| `DOWNLOAD_URL_PREFIX`   | An optional prefix appended in front of the S3 download URL. This is useful for redirecting users to a proxy that checks Salesforce auth before downloading the file. | `https://my-proxy.herokuapp.com/download?url=` |
 
 ## Troubleshooting
 
