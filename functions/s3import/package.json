@@ -16,7 +16,7 @@
         "test": "mocha"
     },
     "dependencies": {
-        "@aws-sdk/client-s3": "^3.83.0",
+        "@aws-sdk/client-s3": "^3.350.0",
         "dotenv": "^16.0.0"
     },
     "devDependencies": {
